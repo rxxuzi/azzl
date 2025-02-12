@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Forbidden</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #FF4500;
+            --hover-color: #FF6347;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        #logo {
+            width: 170px;
+            margin-bottom: 2rem;
+            animation: shake 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            position: relative;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: var(--hover-color);
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            p {
+                font-size: 1.1rem;
+            }
+
+            #logo {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 87">
+            <!-- Pyramid -->
+            <path d="M50 0 L100 87 L0 87 Z" fill="#1a1a1a" stroke="#FF4500" stroke-width="2"></path>
+            <!-- Eye - white background -->
+            <path d="M20 48.5 C20 48.5 35 33 50 33 C65 33 80 48.5 80 48.5 C80 48.5 65 64 50 64 C35 64 20 48.5 20 48.5 Z" fill="white" stroke="#FF4500" stroke-width="1.5"></path>
+            <!-- Eye - X shape -->
+            <line x1="40" y1="40" x2="60" y2="57" stroke="#FF4500" stroke-width="4"></line>
+            <line x1="40" y1="57" x2="60" y2="40" stroke="#FF4500" stroke-width="4"></line>
+        </svg>
+    </div>
+    <h1>403 - Forbidden</h1>
+    <p>You don't have permission to access this page.</p>
+    <a href="/">⟵ Go Back to Home</a>
+</body>
+</html>

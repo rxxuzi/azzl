@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #007BFF;
+            --hover-color: #00A3FF;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        #logo {
+            width: 170px;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            position: relative;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: var(--hover-color);
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            p {
+                font-size: 1.1rem;
+            }
+
+            #logo {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 87">
+            <!-- Pyramid -->
+            <path d="M50 0 L100 87 L0 87 Z" fill="#1a1a1a" stroke="#007BFF" stroke-width="2"></path>
+            <!-- Eye - white background -->
+            <path d="M20 48.5 C20 48.5 35 33 50 33 C65 33 80 48.5 80 48.5 C80 48.5 65 64 50 64 C35 64 20 48.5 20 48.5 Z" fill="white" stroke="#007BFF" stroke-width="1.5"></path>
+            <!-- Eye - inner circle (blue iris) -->
+            <circle cx="50" cy="48.5" r="12" fill="#007BFF" stroke="#000428" stroke-width="2"></circle>
+        </svg>
+    </div>
+    <h1>404 - Page Not Found</h1>
+    <p>Sorry, the page you are looking for does not exist or has been moved.</p>
+    <a href="/">⟵ Go Back to Home</a>
+</body>
+</html>

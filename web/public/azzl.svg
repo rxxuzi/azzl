@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 100 110" width="115" height="115">
+    <defs>
+        <!-- グラデーション定義（ダークブルー → ライトブルー） -->
+        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#000428"/> <!-- 深い青 -->
+            <stop offset="100%" style="stop-color:#004e92"/> <!-- 明るい青 -->
+        </linearGradient>
+    </defs>
+
+    <!-- ピラミッドと目（悪魔の目をイメージ） -->
+    <g transform="translate(0, 6.5) scale(1)">
+        <path d="M50 0 L100 87 L0 87 Z" fill="url(#logoGradient)" stroke="#004e92" stroke-width="2"/>
+        <!-- 白目を追加 -->
+        <path d="M20 48.5 C20 48.5 35 33 50 33 C65 33 80 48.5 80 48.5 C80 48.5 65 64 50 64 C35 64 20 48.5 20 48.5 Z" fill="white" stroke="#004e92" stroke-width="1.5"/>
+        <!-- 瞳をより視認性の高い青に変更 -->
+        <circle cx="50" cy="48.5" r="12" fill="#004e92" stroke="#000428" stroke-width="2"/>
+    </g>
+</svg>
+
