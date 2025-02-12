@@ -1,0 +1,11 @@
+# ==========================
+# AZZL PROJECT 2025
+# ========================== 
+chromadb
+langchain
+flask
+ollama
+numpy
+requests
+transformers
+markitdown
