@@ -1,29 +1,28 @@
 # server/handler.py
 import os
-import sys
-import tempfile
 import json
-from typing import List, Optional
 import httpx
+import tempfile
+import logging
+from typing import List, Optional
+
 from fastapi import FastAPI, HTTPException, Form, File, UploadFile
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from markitdown import MarkItDown
-import logging
 
-# ログの設定
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# 高レベルの検索処理を import
-from server.searcher import retrieve_context
+# モジュールとして自作のファイルをインポート
+from server.reader import read_uploaded_files
+from server.prompting import generate_prompt
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 app = FastAPI()
 
-# CORS 設定：すべてのオリジンを許可
+# CORS の設定：すべてのオリジンを許可
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,16 +31,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 環境変数から設定を取得
 OLLAMA_ENDPOINT = os.getenv("OLLAMA_ENDPOINT", "http://127.0.0.1:11434")
-# ※末尾の "/" を除去しておく
 OLLAMA_GEN_URL = f"{OLLAMA_ENDPOINT.rstrip('/')}/api/generate"
 DEFAULT_MODEL = os.getenv("LLM_MODEL", "azzl:guava")
 
-ALLOWED_EXTENSIONS = {".c", ".py", ".java", ".js", ".cpp", ".go", ".txt", ".md", ".html", ".php", ".tsx"}
-MARKITDOWN_EXTENSIONS = {".pdf", ".docx", ".pptx", ".xlsx", ".jpg", ".jpeg", ".png", ".html", ".csv", ".json", ".xml"}
-
-md_converter = MarkItDown()
 
 @app.post("/api/ask")
 async def handle_ask(
@@ -49,55 +42,22 @@ async def handle_ask(
     language: str = Form(""),
     mode: str = Form("ask"),
     model: Optional[str] = Form(None),
-    files: List[UploadFile] = File([])
+    files: List[UploadFile] = File([]),
 ):
+    logger.info(f"Received request with mode: {mode}, model: {model}, files: {len(files)}")
+    for file in files:
+        logger.info(f"File received: {file.filename}")
+
+
     if not model:
         model = DEFAULT_MODEL
 
-    combined_file_content = ""
-    for file in files:
-        filename = file.filename
-        ext = os.path.splitext(filename)[1].lower()
-        if ext in MARKITDOWN_EXTENSIONS:
-            try:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
-                    tmp.write(await file.read())
-                    tmp_path = tmp.name
-                result = md_converter.convert(tmp_path)
-                file_text = result.text_content or ""
-                combined_file_content += f"\n\n--- Start of {filename} ---\n{file_text}\n--- End of {filename} ---\n"
-                os.remove(tmp_path)
-            except Exception as e:
-                logger.error(f"Error converting {filename}: {str(e)}")
-                raise HTTPException(status_code=500, detail=f"Error converting {filename}: {str(e)}")
-        elif ext in ALLOWED_EXTENSIONS:
-            try:
-                content = await file.read()
-                text = content.decode("utf-8", errors="ignore")
-                combined_file_content += f"\n\n--- Start of {filename} ---\n{text}\n--- End of {filename} ---\n"
-            except Exception as e:
-                logger.error(f"Error reading {filename}: {str(e)}")
-                raise HTTPException(status_code=500, detail=f"Error reading {filename}: {str(e)}")
-        else:
-            raise HTTPException(status_code=400, detail=f"Illegal or unsupported file format: {filename}")
+    # reader.py の関数を呼び出してファイルの内容を取得
+    combined_file_content = await read_uploaded_files(files)
 
-    pr_mode = 1
+    # prompting.py の関数を使ってプロンプトを生成
+    prompt = generate_prompt(question, language, mode, combined_file_content)
 
-    # プロンプト生成：モード "ask" でファイルが無い場合はベクトル検索結果を付加
-    if mode == "ask" and not combined_file_content.strip():
-        # retrieve_context 内で例外はキャッチして空文字を返すようにしているので安心
-        context = retrieve_context(question, top_n=3)
-        if context:
-            pr_mode = 2
-            prompt = f"以下の情報を元に**日本語で質問**に答えてください。\n\n関連情報:\n{context}\n\n質問:\n{question}\n\n"
-        else:
-            pr_mode = 1
-            prompt = f"質問:{question}\n\n 質問と同じ言語で回答してください"
-    else:
-        pr_mode = 0
-        prompt = f"{combined_file_content}\n\n 質問: {question}\n"
-
-    logger.info(f"Prompt mode: {pr_mode}")
     logger.info(f"Constructed prompt (first 100 chars): {prompt[:100]}...")
 
     ollama_req = {
@@ -105,7 +65,7 @@ async def handle_ask(
         "prompt": prompt
     }
     headers = {"Content-Type": "application/json"}
-    
+
     async def stream_response():
         async with httpx.AsyncClient(timeout=None) as client:
             try:
@@ -122,6 +82,3 @@ async def handle_ask(
 
     return StreamingResponse(stream_response(), media_type="application/json")
 
-# 評価用エンドポイントは server/eval.py にて実装しているので include する
-from server.eval import router as eval_router
-app.include_router(eval_router, prefix="/api")

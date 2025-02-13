@@ -71,7 +71,7 @@ export default function App() {
     formData.append('language', language);
     formData.append('model', getModelValue(model));
     if (file) {
-      formData.append('file', file);
+      formData.append('files', file);
     }
 
     const newMessage = { 

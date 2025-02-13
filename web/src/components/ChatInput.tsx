@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Send, Paperclip, Loader2, Code } from 'lucide-react';
+import { Send, Paperclip, Loader2, Code, AlertCircle } from 'lucide-react';
 import { APP_NAME, Mode } from '../App';
 import { FilePreviewModal } from './FilePreviewModal';
 import { ModelType } from '../types/models';
@@ -19,6 +19,9 @@ interface ChatInputProps {
   className?: string;
   enterToSubmit: boolean;
 }
+
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+const MAX_FILES = 4;
 
 const languages = [
   { id: 'c', label: 'C' },
@@ -59,6 +62,7 @@ export function ChatInput({
   const [fileContent, setFileContent] = useState<string>('');
   const [isFocused, setIsFocused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -72,15 +76,31 @@ export function ChatInput({
     }
   };
 
+  const validateFile = (file: File): boolean => {
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError(`File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`);
+      return false;
+    }
+    return true;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
+      if (!validateFile(selectedFile)) {
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      }
+
       setFile(selectedFile);
       const reader = new FileReader();
       reader.onload = (e) => {
         setFileContent(e.target?.result as string);
       };
       reader.readAsText(selectedFile);
+      setFileError(null);
     }
   };
 
@@ -162,7 +182,12 @@ export function ChatInput({
                   </div>
                 )}
 
-                {error && <span className="text-sm text-red-400">{error}</span>}
+                {(error || fileError) && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 rounded-lg text-red-400">
+                    <AlertCircle className="w-4 h-4" />
+                    <span className="text-sm">{error || fileError}</span>
+                  </div>
+                )}
               </div>
               
               <button

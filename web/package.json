@@ -1,34 +1,35 @@
 {
-    "name": "viro-frontend",
-    "private": true,
-    "version": "0.1.5",
-    "type": "module",
-    "scripts": {
-      "dev": "vite",
-      "build": "tsc && vite build",
-      "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-      "preview": "vite preview"
-    },
-    "dependencies": {
-      "@types/react": "^18.2.43",
-      "@types/react-dom": "^18.2.17",
-      "@types/react-syntax-highlighter": "^15.5.11",
-      "@types/uuid": "^9.0.7",
-      "@vitejs/plugin-react": "^4.2.1",
-      "autoprefixer": "^10.4.16",
-      "lucide-react": "^0.303.0",
-      "postcss": "^8.4.32",
-      "react": "^18.2.0",
-      "react-dom": "^18.2.0",
-      "react-markdown": "^9.0.1",
-      "react-syntax-highlighter": "^15.5.0",
-      "rehype-katex": "^7.0.0",
-      "rehype-raw": "^7.0.0",
-      "remark-gfm": "^4.0.0",
-      "remark-math": "^6.0.0",
-      "tailwindcss": "^3.4.0",
-      "typescript": "^5.2.2",
-      "uuid": "^9.0.1",
-      "vite": "^5.0.8"
-    }
+  "name": "viro-frontend",
+  "private": true,
+  "version": "0.1.5",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/react-syntax-highlighter": "^15.5.11",
+    "@types/uuid": "^9.0.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "lucide-react": "^0.303.0",
+    "postcss": "^8.4.32",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^9.0.1",
+    "react-pdf": "^7.6.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "rehype-katex": "^7.0.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.2.2",
+    "uuid": "^9.0.1",
+    "vite": "^5.0.8"
   }
+}
