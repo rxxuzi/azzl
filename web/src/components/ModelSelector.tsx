@@ -38,19 +38,21 @@ export function ModelSelector({ model, setModel }: ModelSelectorProps) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+        className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-[#0D0D0D] transition-colors border border-transparent hover:border-white/[0.03]"
       >
         <div className="flex items-center gap-2">
           <img src="/azzl.svg" alt="AZZL ICON" className="h-6" />
           <span className="text-lg font-bold bg-gradient-to-r from-[#00D1FF] to-[#FF3DFF] bg-clip-text text-transparent">
             {APP_NAME}
           </span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0D0D] border border-white/[0.03]">
           {getModelIcon(model)}
-          <span className="text-white/90">
+          <span className="text-white/80">
             {model.charAt(0).toUpperCase() + model.slice(1)}
           </span>
+          <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </div>
-        <ChevronDown className={`w-4 h-4 text-white/50 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
@@ -59,7 +61,7 @@ export function ModelSelector({ model, setModel }: ModelSelectorProps) {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full left-0 mt-2 w-64 bg-[#1A1A1A] rounded-xl shadow-lg border border-white/10 overflow-hidden z-50">
+          <div className="absolute top-full left-0 mt-2 w-64 bg-[#0D0D0D] rounded-xl shadow-2xl border border-white/[0.03] overflow-hidden z-50">
             {models.map(({ id, label, description }) => (
               <button
                 key={id}
@@ -67,16 +69,16 @@ export function ModelSelector({ model, setModel }: ModelSelectorProps) {
                   setModel(id);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-start gap-3 p-4 hover:bg-white/5 transition-colors ${
-                  model === id ? 'bg-white/10' : ''
+                className={`w-full flex items-start gap-3 p-4 hover:bg-black/20 transition-colors ${
+                  model === id ? 'bg-black/20' : ''
                 }`}
               >
                 {getModelIcon(id)}
                 <div className="text-left">
-                  <div className="font-medium" style={{ color: getModelColor(id) }}>
+                  <div className="font-medium text-white/90">
                     {label}
                   </div>
-                  <div className="text-sm text-white/50">{description}</div>
+                  <div className="text-sm text-white/40">{description}</div>
                 </div>
               </button>
             ))}

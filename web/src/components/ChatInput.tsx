@@ -93,12 +93,14 @@ export function ChatInput({
 
   return (
     <>
-      <div className={`fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A] to-transparent pb-3 pt-8 px-4 md:px-0 z-[100] ${className}`}>
-        <div className="max-w-4xl mx-auto space-y-2">
+      <div className={`fixed bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/95 to-transparent pb-6 pt-12 px-4 md:px-0 z-[100] ${className}`}>
+        <div className="max-w-4xl mx-auto space-y-4">
           <div 
-            className="bg-[#1A1A1A] rounded-2xl shadow-lg transition-all duration-700 overflow-hidden"
+            className="bg-[#0D0D0D] rounded-2xl shadow-2xl transition-all duration-700 overflow-hidden border border-white/5"
             style={{
-              boxShadow: isFocused ? `0 0 0 2px ${modeColors[mode]}20, 0 4px 20px ${modeColors[mode]}10` : undefined
+              boxShadow: isFocused 
+                ? `0 0 0 2px ${modeColors[mode]}20, 0 8px 32px rgba(0,0,0,0.4), 0 4px 24px ${modeColors[mode]}15` 
+                : '0 8px 32px rgba(0,0,0,0.4)'
             }}
           >
             <div className="relative">
@@ -110,23 +112,23 @@ export function ChatInput({
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder={enterToSubmit ? "How can AZZL help you today? (Shift + Enter for new line)" : "How can AZZL help you today? (Enter for new line, Shift + Enter to submit)"}
-                className="w-full bg-transparent px-6 py-3 resize-none text-white min-h-[46px] placeholder:text-white/30 focus:outline-none focus:ring-0 border-none"
+                className="w-full bg-transparent px-6 py-4 resize-none text-white/90 min-h-[46px] placeholder:text-white/30 focus:outline-none focus:ring-0 border-none text-[15px]"
                 style={{ maxHeight: '100px', overflowY: 'auto' }}
               />
               <div 
-                className="absolute bottom-0 left-0 right-0 h-[2px] transition-transform duration-700 ease-out"
+                className="absolute bottom-0 left-0 right-0 h-[1px] transition-transform duration-700 ease-out"
                 style={{
-                  background: modeColors[mode],
+                  background: `linear-gradient(to right, transparent, ${modeColors[mode]}80, transparent)`,
                   transform: `scaleX(${isFocused ? 1 : 0})`,
-                  opacity: 0.5
+                  opacity: 0.7
                 }}
               />
             </div>
             
-            <div className="flex justify-between items-center px-4 py-2 border-t border-white/5">
+            <div className="flex justify-between items-center px-4 py-2 border-t border-white/[0.03] bg-black/20">
               <div className="flex items-center gap-2">
                 <label className="p-2 hover:bg-white/5 rounded-xl cursor-pointer transition-colors">
-                  <Paperclip className="w-5 h-5 text-white/50" />
+                  <Paperclip className="w-5 h-5 text-white/40 hover:text-white/60 transition-colors" />
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -139,9 +141,9 @@ export function ChatInput({
                 {file && (
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg hover:bg-white/[0.06] transition-colors"
                   >
-                    <span className="text-sm text-white/70">{file.name}</span>
+                    <span className="text-sm text-white/60">{file.name}</span>
                   </button>
                 )}
 
@@ -150,23 +152,28 @@ export function ChatInput({
                     <select
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
-                      className="appearance-none bg-[#252525] text-white/90 text-sm pl-8 pr-3 py-1.5 rounded-lg focus:outline-none hover:bg-[#303030] transition-colors cursor-pointer border border-white/10"
+                      className="appearance-none bg-[#151515] text-white/80 text-sm pl-8 pr-3 py-1.5 rounded-lg focus:outline-none hover:bg-[#1A1A1A] transition-colors cursor-pointer border border-white/[0.06]"
                     >
                       {languages.map(({ id, label }) => (
                         <option key={id} value={id}>{label}</option>
                       ))}
                     </select>
-                    <Code className="w-4 h-4 text-white/50 absolute left-2 top-1/2 -translate-y-1/2" />
+                    <Code className="w-4 h-4 text-white/40 absolute left-2 top-1/2 -translate-y-1/2" />
                   </div>
                 )}
 
-                {error && <span className="text-sm text-red-500">{error}</span>}
+                {error && <span className="text-sm text-red-400">{error}</span>}
               </div>
               
               <button
                 onClick={(e) => onSubmit(e as any)}
                 disabled={isLoading}
-                className="p-2 bg-gradient-to-r from-[#00D1FF] to-[#FF3DFF] rounded-xl disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-[#00D1FF]/20 hover:scale-105 active:scale-95"
+                className="p-2.5 bg-gradient-to-r from-[#00D1FF] to-[#FF3DFF] rounded-xl disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-[#00D1FF]/20 hover:scale-105 active:scale-95 disabled:hover:scale-100 disabled:hover:shadow-none"
+                style={{
+                  background: isLoading 
+                    ? '#1A1A1A'
+                    : `linear-gradient(135deg, ${modeColors[mode]}, ${modeColors[mode]}90)`
+                }}
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

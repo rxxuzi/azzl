@@ -25,17 +25,24 @@ export function ModeSelector({ mode, setMode }: ModeSelectorProps) {
           <button
             key={id}
             onClick={() => setMode(id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 ${
               mode === id
-                ? 'bg-white/10 shadow-lg'
-                : 'bg-transparent hover:bg-white/5'
+                ? 'bg-[#0D0D0D] shadow-lg border border-white/[0.03]'
+                : 'bg-transparent hover:bg-[#0D0D0D] border border-transparent'
             }`}
             style={{
-              boxShadow: mode === id ? `0 4px 20px ${color}20` : undefined,
+              boxShadow: mode === id ? `0 4px 24px ${color}15` : undefined,
             }}
           >
             <Icon className="w-4 h-4" style={{ color }} />
-            <span style={{ color }}>{label}</span>
+            <span 
+              className={`transition-colors ${
+                mode === id ? 'text-white/90' : 'text-white/60'
+              }`}
+              style={{ color: mode === id ? color : undefined }}
+            >
+              {label}
+            </span>
           </button>
         ))}
       </div>
@@ -44,7 +51,7 @@ export function ModeSelector({ mode, setMode }: ModeSelectorProps) {
       <div className="md:hidden relative">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          className="p-2 hover:bg-[#0D0D0D] rounded-lg transition-colors"
         >
           <Menu className="w-6 h-6" />
         </button>
@@ -55,7 +62,7 @@ export function ModeSelector({ mode, setMode }: ModeSelectorProps) {
               className="fixed inset-0"
               onClick={() => setIsMenuOpen(false)}
             />
-            <div className="absolute right-0 top-12 bg-[#1A1A1A] rounded-xl shadow-lg border border-white/10 overflow-hidden w-48">
+            <div className="absolute right-0 top-12 bg-[#0D0D0D] rounded-xl shadow-2xl border border-white/[0.03] overflow-hidden w-48">
               {modes.map(({ id, icon: Icon, color, label }) => (
                 <button
                   key={id}
@@ -65,8 +72,8 @@ export function ModeSelector({ mode, setMode }: ModeSelectorProps) {
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
                     mode === id
-                      ? 'bg-white/10'
-                      : 'hover:bg-white/5'
+                      ? 'bg-black/20'
+                      : 'hover:bg-black/20'
                   }`}
                 >
                   <Icon className="w-4 h-4" style={{ color }} />
