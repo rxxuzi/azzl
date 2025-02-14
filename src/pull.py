@@ -9,7 +9,7 @@ from queue import Queue
 from rich.progress import track
 from rich.prompt import Confirm
 from rich.console import Console
-from gen.vector import generate_embedding, setup_chroma_collection
+from gen.search import generate_embedding, setup_chroma_collection
 from gen.database import save_vector_db
 
 # .envを読み込む
