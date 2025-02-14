@@ -5,9 +5,9 @@ import { ChatInput } from './components/ChatInput';
 import { Message } from './components/Message';
 import { ModelType, getModelValue } from './types/models';
 
-export type Mode = 'ask' | 'code' | 'docs' | 'fix';
+export type Mode = 'ask' | 'code' | 'docs' | 'deep';
 export const APP_NAME = 'Azzl';
-export const VERSION = '1.0.0';
+export const VERSION = '0.4.0';
 export const API_ENDPOINT = 'http://10.133.0.61:16710';
 
 interface MessageType {
@@ -15,18 +15,18 @@ interface MessageType {
   content: string;
   id: string;
   question?: string;
+  mode?: Mode;
 }
 
-const ENTER_TO_SUBMIT_KEY = 'viro_enter_to_submit';
+const ENTER_TO_SUBMIT_KEY = 'azzl_enter_to_submit';
 
 export default function App() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [input, setInput] = useState('');
-  const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<Mode>('ask');
   const [model, setModel] = useState<ModelType>('durian');
-  const [language, setLanguage] = useState('javascript');
+  const [language, setLanguage] = useState('c');
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -59,9 +59,10 @@ export default function App() {
     }, 300);
   };
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() && !file) return;
+    if (!input.trim()) return;
 
     setError(undefined);
     setHasInteracted(true);
@@ -70,14 +71,13 @@ export default function App() {
     formData.append('mode', mode);
     formData.append('language', language);
     formData.append('model', getModelValue(model));
-    if (file) {
-      formData.append('files', file);
-    }
 
-    const newMessage = { 
-      role: 'user' as const, 
+    // **ユーザーの質問を mode と一緒に保存**
+    const newMessage: MessageType = { 
+      role: 'user', 
       content: input, 
       id: Date.now().toString(),
+      mode: mode  // 追加
     };
     setMessages(prev => [...prev, newMessage]);
     setInput('');
@@ -115,13 +115,14 @@ export default function App() {
               const lastMessage = newMessages[newMessages.length - 1];
               if (lastMessage?.role === 'assistant') {
                 lastMessage.content = accumulatedContent;
-                return [...newMessages];
+                return newMessages;
               }
               return [...prev, { 
                 role: 'assistant', 
                 content: accumulatedContent, 
                 id: Date.now().toString(),
-                question: input 
+                question: input,
+                mode: mode // **追加: mode を保存**
               }];
             });
           } catch (e) {
@@ -182,8 +183,6 @@ export default function App() {
         <ChatInput
           input={input}
           setInput={setInput}
-          file={file}
-          setFile={setFile}
           isLoading={isLoading}
           mode={mode}
           model={model}

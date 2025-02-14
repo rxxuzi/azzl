@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Brain, Code, FileText, FileQuestion, Menu } from 'lucide-react';
+import { Lightbulb, Code, FileText, Zap, Menu } from 'lucide-react';
 import { Mode } from '../App';
 
 const modes = [
-  { id: 'ask' as Mode, icon: Brain, color: '#FF3DFF', label: 'Ask' },
+  { id: 'ask' as Mode, icon: Lightbulb, color: '#FF3DFF', label: 'Ask' },
   { id: 'code' as Mode, icon: Code, color: '#FF8A00', label: 'Code' },
   { id: 'docs' as Mode, icon: FileText, color: '#00FF94', label: 'Docs' },
-  { id: 'fix' as Mode, icon: FileQuestion, color: '#00D1FF', label: 'Fix' },
+  { id: 'deep' as Mode, icon: Zap, color: '#00D1FF', label: 'Deep' },
 ];
 
 interface ModeSelectorProps {

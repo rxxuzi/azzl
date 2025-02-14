@@ -10,18 +10,21 @@ import { Copy, Check, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { submitEvaluation } from '../utils/evaluation';
 import { getBrowserId } from '../utils/browserId';
 import { ModelType } from '../types/models';
+import { Mode } from '../App';
 
 interface MessageProps {
   message: {
     role: 'user' | 'assistant';
     content: string;
+    mode: string;
   };
   onRegenerate?: () => void;
   question?: string;
   model: ModelType;
+  mode: Mode;
 }
 
-export function Message({ message, onRegenerate, question, model }: MessageProps) {
+export function Message({ message, onRegenerate, question, model, mode }: MessageProps) {
   const [copiedBlock, setCopiedBlock] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<'good' | 'bad' | null>(null);
   const [copied, setCopied] = useState(false);
@@ -73,21 +76,28 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
 
   const handleFeedback = async (type: 'good' | 'bad') => {
     if (feedback === type || isSubmitting || message.role !== 'assistant') return;
-
+  
     setIsSubmitting(true);
-    const success = await submitEvaluation(type, {
+    const now = new Date();
+    const timestamp = now.toISOString().slice(0, 19); // "YYYY-MM-DDTHH:mm:ss"
+  
+    const evaluationData = {
       q: question || '',
       a: message.content,
-      t: Math.floor(Date.now() / 1000),
+      t: timestamp,
       i: getBrowserId(),
       m: model,
-    });
-
+      mode: message.mode || '?'
+    };
+  
+    const success = await submitEvaluation(type, evaluationData);
+  
     if (success) {
       setFeedback(type);
     }
     setIsSubmitting(false);
   };
+
 
   const processContent = (content: string) => {
     const segments = [];
@@ -104,7 +114,6 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
       let nextMathStart = -1;
       let matchedPattern = null;
 
-      // Find the next math expression
       for (const pattern of mathPatterns) {
         const startIndex = content.indexOf(pattern.start, currentIndex);
         if (startIndex !== -1 && (nextMathStart === -1 || startIndex < nextMathStart)) {
@@ -114,27 +123,22 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
       }
 
       if (nextMathStart === -1) {
-        // No more math expressions, add remaining text
         segments.push({ type: 'text', content: content.slice(currentIndex) });
         break;
       }
 
-      // Add text before math expression
       if (nextMathStart > currentIndex) {
         segments.push({ type: 'text', content: content.slice(currentIndex, nextMathStart) });
       }
 
-      // Find the end of the math expression
       const startDelimiterLength = matchedPattern!.start.length;
       const endIndex = content.indexOf(matchedPattern!.end, nextMathStart + startDelimiterLength);
 
       if (endIndex === -1) {
-        // Unclosed math expression, treat as text
         segments.push({ type: 'text', content: content.slice(nextMathStart) });
         break;
       }
 
-      // Add math expression
       const mathContent = content.slice(nextMathStart + startDelimiterLength, endIndex);
       segments.push({
         type: 'math',
@@ -149,13 +153,11 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
   };
 
   return (
-    <div
-      className={`group p-6 rounded-2xl shadow-lg transition-all duration-300 ${
-        message.role === 'user'
-          ? 'ml-4 md:ml-12 bg-gradient-to-r from-[#0A1A3D] to-[#0D0D0D] border border-[#1E3A8A]/10'
-          : 'mr-4 md:mr-12 bg-[#0D0D0D] border border-white/[0.03] hover:border-white/[0.06]'
-      }`}
-    >
+    <div className={`group p-6 rounded-2xl shadow-lg transition-all duration-300 ${
+      message.role === 'user'
+        ? 'ml-4 md:ml-12 bg-gradient-to-r from-[#0A1A3D] to-[#0D0D0D] border border-[#1E3A8A]/10'
+        : 'mr-4 md:mr-12 bg-[#0D0D0D] border border-white/[0.03]'
+    }`}>
       <div className="prose prose-invert max-w-none">
         {processContent(message.content).map((segment, index) => (
           <React.Fragment key={index}>
@@ -167,7 +169,7 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
                   code({ node, inline, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
                     const code = String(children).replace(/\n$/, '');
-                    
+
                     return !inline && match ? (
                       <div className="relative my-6 first:mt-0 last:mb-0 overflow-hidden rounded-xl border border-white/[0.03]">
                         <div className="absolute top-0 right-0 left-0 h-12 bg-black/40 border-b border-white/[0.03] flex items-center justify-between px-4">
@@ -236,7 +238,7 @@ export function Message({ message, onRegenerate, question, model }: MessageProps
       </div>
 
       {message.role === 'assistant' && (
-        <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2 mt-4">
           <button
             onClick={() => handleFeedback('good')}
             disabled={isSubmitting}

@@ -40,7 +40,7 @@ const modeColors = {
   ask: '#FF3DFF',
   code: '#FF8A00',
   docs: '#00FF94',
-  fix: '#00D1FF',
+  deep: '#00D1FF',
 };
 
 export function ChatInput({
@@ -50,6 +50,7 @@ export function ChatInput({
   setFile,
   isLoading,
   mode,
+  model,
   language,
   setLanguage,
   onSubmit,
@@ -147,18 +148,20 @@ export function ChatInput({
             
             <div className="flex justify-between items-center px-4 py-2 border-t border-white/[0.03] bg-black/20">
               <div className="flex items-center gap-2">
-                <label className="p-2 hover:bg-white/5 rounded-xl cursor-pointer transition-colors">
-                  <Paperclip className="w-5 h-5 text-white/40 hover:text-white/60 transition-colors" />
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept=".c,.py,.java,.js,.go,.txt,.md,.html,.php,.asm,.tsx,.jsx,.json,.yaml,.csv,.pdf,.docx,.pptx,.xlsx"
-                  />
-                </label>
+                {mode !== 'deep' && (
+                  <label className="p-2 hover:bg-white/5 rounded-xl cursor-pointer transition-colors">
+                    <Paperclip className="w-5 h-5 text-white/40 hover:text-white/60 transition-colors" />
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept=".c,.py,.java,.js,.go,.txt,.md,.html,.php,.asm,.tsx,.jsx,.json,.yaml,.csv,.pdf,.docx,.pptx,.xlsx"
+                    />
+                  </label>
+                )}
 
-                {file && (
+                {file && mode !== 'deep' && (
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg hover:bg-white/[0.06] transition-colors"

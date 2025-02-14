@@ -7,6 +7,10 @@ www/
 www/*
 bin/
 *.db
+out/
+models/
+doc/
+test/
 
 ### Go template
 # If you prefer the allow list template instead of the deny list, see community template:
@@ -66,7 +70,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

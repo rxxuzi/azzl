@@ -5,15 +5,14 @@ import httpx
 import tempfile
 import logging
 from typing import List, Optional
-
 from fastapi import FastAPI, HTTPException, Form, File, UploadFile
 from fastapi.responses import StreamingResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
-# モジュールとして自作のファイルをインポート
+from server.eval import eval_router
 from server.reader import read_uploaded_files
-from server.prompting import generate_prompt
+from gen.prompting import generate_prompt
 
 load_dotenv()
 
@@ -31,10 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(eval_router, prefix="/api")
+
 OLLAMA_ENDPOINT = os.getenv("OLLAMA_ENDPOINT", "http://127.0.0.1:11434")
 OLLAMA_GEN_URL = f"{OLLAMA_ENDPOINT.rstrip('/')}/api/generate"
+# OLLAMA_CHAT_URL = f"{OLLAMA_ENDPOINT.rstrip('/')}/api/chat" # TODO
 DEFAULT_MODEL = os.getenv("LLM_MODEL", "azzl:guava")
-
 
 @app.post("/api/ask")
 async def handle_ask(

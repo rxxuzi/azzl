@@ -3,9 +3,10 @@ import { API_ENDPOINT } from "../App";
 interface EvaluationData {
   q: string;
   a: string;
-  t: number;
+  t: string;
   i: string;
   m: string;
+  mode: string;
 }
 
 export async function submitEvaluation(type: 'good' | 'bad', data: EvaluationData): Promise<boolean> {

@@ -7,6 +7,7 @@ import ollama
 import chromadb
 import json
 import requests
+from config import THRESHOLD, TOP_N
 
 load_dotenv()
 
@@ -20,7 +21,6 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "mxbai-embed-large")
 
 def generate_embedding(text: str) -> list:
     try:
-        # Ollamaの接続チェック
         response = requests.get(f"{OLLAMA_ENDPOINT}/api/version")
     except requests.exceptions.RequestException as e:
         logger.error(f"Ollama connection failed: {e}")
@@ -47,11 +47,9 @@ def generate_embedding(text: str) -> list:
         logger.error(f"Embedding generation failed: {e}")
         sys.exit(1)
 
-
 def cosine_similarity(vec1: list, vec2: list) -> float:
     """
     コサイン類似度を計算する。
-    0除算を回避するため、いずれかのベクトルの大きさがゼロなら 0.0 を返す。
     """
     dot_product = sum(a * b for a, b in zip(vec1, vec2))
     magnitude1 = sum(a ** 2 for a in vec1) ** 0.5
@@ -60,18 +58,20 @@ def cosine_similarity(vec1: list, vec2: list) -> float:
         return 0.0
     return dot_product / (magnitude1 * magnitude2)
 
-def search_vector_db(query_embedding: list, vector_db: list, top_n: int = 3) -> list:
+def search_vector_db(query_embedding: list, vector_db: list, top_n: int = TOP_N) -> list:
     """
     ベクトルデータベースから、指定された埋め込みとコサイン類似度の高い上位 N 件の文書を返す。
+    各候補に dense な類似度スコアを 'similarity' キーとして追加する。
     """
     scored = []
     for entry in vector_db:
         embedding = entry.get("embedding", [])
         similarity = cosine_similarity(query_embedding, embedding)
-        scored.append((similarity, entry))
-    # 類似度の高い順にソートして上位 N 件を抽出
-    scored.sort(key=lambda x: x[0], reverse=True)
-    return [entry for similarity, entry in scored[:top_n]]
+        candidate = entry.copy()
+        candidate["similarity"] = similarity
+        scored.append(candidate)
+    scored.sort(key=lambda x: x["similarity"], reverse=True)
+    return scored[:top_n]
 
 def setup_chroma_collection():
     client = chromadb.Client()
