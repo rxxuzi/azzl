@@ -57,7 +57,7 @@ async def handle_ask(
     combined_file_content = await read_uploaded_files(files)
 
     # prompting.py の関数を使ってプロンプトを生成
-    prompt = generate_prompt(question, language, mode, combined_file_content)
+    prompt = generate_prompt(question, language, mode, combined_file_content, reason=True)
 
     logger.info(f"Constructed prompt (first 100 chars): {prompt[:100]}...")
 

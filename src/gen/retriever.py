@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from gen.database import load_vector_db
-from gen.vector import generate_embedding, search_vector_db
+from gen.search import generate_embedding, search_vector_db
 from config import TOP_N, THRESHOLD
 
 logger = logging.getLogger(__name__)
@@ -90,9 +90,9 @@ def retrieve_context(question: str, top_n: int = TOP_N, threshold: float = THRES
             logger.warning("Vector DB is empty.")
             return ""
 
-        # 質問を埋め込んで Dense Retrieval (トップN*3件)
+        # Dense Retrieval
         query_embedding = generate_embedding(question)
-        dense_candidates = search_vector_db(query_embedding, vector_db, top_n=top_n * 3)
+        dense_candidates = search_vector_db(query_embedding, vector_db)
         logger.info(f"Dense Retrieval: {len(dense_candidates)} candidates obtained.")
 
         # Cross Encoder による再ランキング
