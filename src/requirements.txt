@@ -8,4 +8,7 @@ ollama
 numpy
 requests
 transformers
+torch
 markitdown
+psutil
+rich
