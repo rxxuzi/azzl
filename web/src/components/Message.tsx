@@ -158,7 +158,7 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
         ? 'ml-4 md:ml-12 bg-gradient-to-r from-[#0A1A3D] to-[#0D0D0D] border border-[#1E3A8A]/10'
         : 'mr-4 md:mr-12 bg-[#0D0D0D] border border-white/[0.03]'
     }`}>
-      <div className="prose prose-invert max-w-none">
+      <div className="prose prose-invert max-w-none markdown-content">
         {processContent(message.content).map((segment, index) => (
           <React.Fragment key={index}>
             {segment.type === 'text' ? (

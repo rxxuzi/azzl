@@ -7,7 +7,7 @@ import { ModelType, getModelValue } from './types/models';
 
 export type Mode = 'ask' | 'code' | 'docs' | 'deep';
 export const APP_NAME = 'Azzl';
-export const VERSION = '0.4.0';
+export const VERSION = '1.3.0';
 export const API_ENDPOINT = 'http://10.133.0.61:16710';
 
 interface MessageType {
