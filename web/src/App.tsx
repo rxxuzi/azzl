@@ -7,7 +7,7 @@ import { ModelType, getModelValue } from './types/models';
 
 export type Mode = 'ask' | 'code' | 'docs' | 'deep';
 export const APP_NAME = 'Azzl';
-export const VERSION = '1.5.0';
+export const VERSION = '1.5.1';
 export const API_ENDPOINT = 'http://10.133.0.61:16710';
 
 interface MessageType {
@@ -28,6 +28,8 @@ export default function App() {
   const [mode, setMode] = useState<Mode>('ask');
   const [model, setModel] = useState<ModelType>('durian');
   const [language, setLanguage] = useState('c');
+  // ファイル状態を管理（ここで一元管理）
+  const [file, setFile] = useState<File | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -80,6 +82,9 @@ export default function App() {
     formData.append('mode', mode);
     formData.append('language', language);
     formData.append('model', getModelValue(model));
+    if (file) {
+      formData.append('files', file);
+    }
 
     const newMessage = { 
       role: 'user' as const, 
@@ -104,7 +109,7 @@ export default function App() {
       if (!reader) throw new Error('No reader available');
 
       let accumulatedContent = '';
-      
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -129,11 +134,11 @@ export default function App() {
                 content: accumulatedContent, 
                 id: Date.now().toString(),
                 question: input,
-                mode: mode // **追加: mode を保存**
+                mode: mode
               }];
             });
           } catch (e) {
-            // console.error('Error parsing JSON:', e);
+            // JSONパースエラーは無視
           }
         }
       }
@@ -142,11 +147,12 @@ export default function App() {
       setError('Failed to get response. Please try again.');
     } finally {
       setIsLoading(false);
+      // 送信後にファイル状態をクリア
+      setFile(null);
     }
   };
 
   const handleRegenerate = async () => {
-    // Implement regeneration logic
     console.log('Regenerating response...');
   };
 
@@ -201,6 +207,8 @@ export default function App() {
           error={error}
           className={hasInteracted ? '' : 'max-w-2xl mx-auto'}
           enterToSubmit={enterToSubmit}
+          file={file}
+          setFile={setFile}
         />
       </main>
     </div>

@@ -83,7 +83,7 @@ export function FilePreviewModal({ isOpen, onClose, file, content, onRemove }: F
           <Document
             file={file}
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-            onLoadError={(error) => setError('Failed to load PDF')}
+            onLoadError={() => setError('Failed to load PDF')}
             className="flex-1 overflow-auto"
           >
             <Page 
@@ -166,9 +166,22 @@ export function FilePreviewModal({ isOpen, onClose, file, content, onRemove }: F
     );
   };
 
+  const closeModalOnOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // モーダル内のクリックを防ぐ（子要素まで伝播するのを阻止）
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-[#0D0D0D] rounded-2xl w-full max-w-4xl h-[80vh] overflow-hidden shadow-2xl border border-white/[0.03]">
+    <div 
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[200]" 
+      onClick={closeModalOnOutsideClick} // 背景をクリックしたらモーダルを閉じる
+    >
+      <div 
+        className="bg-[#0D0D0D] rounded-2xl w-full max-w-4xl h-[80vh] overflow-hidden shadow-2xl border border-white/[0.03]"
+        onClick={(e) => e.stopPropagation()} // モーダル内のクリックは伝播を止める
+      >
         <div className="flex justify-between items-center px-6 py-4 border-b border-white/[0.03] bg-black/20">
           <div className="flex items-center gap-4">
             <h3 className="text-lg font-medium text-white/90">
