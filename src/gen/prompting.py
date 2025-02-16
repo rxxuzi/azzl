@@ -35,7 +35,11 @@ def generate_prompt(question: str, language: str, mode: str, file_content: str, 
             else:
                 prompt = f"【質問】: {question}\n\n質問と同じ言語で回答してください。"
         else:
-            prompt = f"{file_content}\n\n以下の情報を踏まえて、質問: {question}\n"
+            prompt = (
+                "提供されたファイルの内容をよく解析したうえで質問に答えてください\n"
+                f"【ファイル概要】\n```{file_content}```\n\n"
+                f"【質問】\n{question}\n\n"
+            )
     elif mode == "code":
         if file_content.strip():
             prompt = (
