@@ -48,7 +48,6 @@ def rerank_candidates(query: str, candidates: List[Dict[str, Any]]) -> List[Dict
     """
     global _tokenizer, _model
     if _model is None or _tokenizer is None:
-        # モデル未初期化の場合は、そのまま返すか、例外を投げる
         logger.warning("Cross Encoder model is not initialized. Skipping rerank.")
         return candidates
 

@@ -63,15 +63,30 @@ def generate_prompt(question: str, language: str, mode: str, file_content: str, 
                 f"### 【ファイル概要】\n```\n{file_content}\n```"
             )
         else:
-            prompt = (
-                "以下の質問に基づき、詳細で分かりやすいMarkdown形式のドキュメントを作成してください。\n\n"
-                "### 【作成ルール】\n"
-                "- Markdown形式を使用する。\n"
-                "- 適切な見出し（# ～ ####）をつける。\n"
-                "- 箇条書き、表、コードブロックを適宜活用する。\n"
-                "- 明確で簡潔な説明を書く。\n\n"
-                f"### 【質問】\n{question}"
-            )
+            context = retrieve_context(question, top_n=TOP_N)
+            if context:
+                prompt = (
+                    "以下の関連情報と質問に基づき、詳細で分かりやすいMarkdown形式のドキュメントを作成してください。\n\n"
+                    f"### 【関連情報】\n{context}\n\n"
+                    "- 以上のの関連情報を参考にして下さい。"
+                    "### 【作成ルール】\n"
+                    "- Markdown形式を使用する。\n"
+                    "- 適切な見出し（# ～ ####）をつける。\n"
+                    "- 箇条書き、表、コードブロックを適宜活用する。\n"
+                    "- 明確で簡潔な説明を書く。\n\n"
+                    f"### 【質問】\n{question}"
+                )
+            else: 
+                prompt = (
+                    "以下の質問に基づき、詳細で分かりやすいMarkdown形式のドキュメントを作成してください。\n\n"
+                    "### 【作成ルール】\n"
+                    "- だである調(常体)にすること"
+                    "- Markdown形式を使用する。\n"
+                    "- 適切な見出し（# ～ ####）をつける。\n"
+                    "- 箇条書き、表、コードブロックを適宜活用する。\n"
+                    "- 明確で簡潔な説明を書く。\n\n"
+                    f"### 【質問】\n{question}"
+                )
 
     elif mode == "deep":
         context = retrieve_context(question, top_n=TOP_N)
