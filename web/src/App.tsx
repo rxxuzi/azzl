@@ -7,7 +7,7 @@ import { ModelType, getModelValue } from './types/models';
 
 export type Mode = 'ask' | 'code' | 'docs' | 'deep';
 export const APP_NAME = 'Azzl';
-export const VERSION = '1.3.0';
+export const VERSION = '1.5.0';
 export const API_ENDPOINT = 'http://10.133.0.61:16710';
 
 interface MessageType {
@@ -19,6 +19,7 @@ interface MessageType {
 }
 
 const ENTER_TO_SUBMIT_KEY = 'azzl_enter_to_submit';
+const THEME_KEY = 'azzl_theme';
 
 export default function App() {
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -35,6 +36,10 @@ export default function App() {
     const saved = localStorage.getItem(ENTER_TO_SUBMIT_KEY);
     return saved !== null ? JSON.parse(saved) : true;
   });
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem(THEME_KEY);
+    return (saved as 'light' | 'dark') || 'dark';
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -49,6 +54,11 @@ export default function App() {
     localStorage.setItem(ENTER_TO_SUBMIT_KEY, JSON.stringify(enterToSubmit));
   }, [enterToSubmit]);
 
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   const handleCleanup = () => {
     setCleanupInProgress(true);
     setTimeout(() => {
@@ -59,7 +69,6 @@ export default function App() {
     }, 300);
   };
 
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -72,12 +81,10 @@ export default function App() {
     formData.append('language', language);
     formData.append('model', getModelValue(model));
 
-    // **ユーザーの質問を mode と一緒に保存**
-    const newMessage: MessageType = { 
-      role: 'user', 
+    const newMessage = { 
+      role: 'user' as const, 
       content: input, 
       id: Date.now().toString(),
-      mode: mode  // 追加
     };
     setMessages(prev => [...prev, newMessage]);
     setInput('');
@@ -126,7 +133,7 @@ export default function App() {
               }];
             });
           } catch (e) {
-            console.error('Error parsing JSON:', e);
+            // console.error('Error parsing JSON:', e);
           }
         }
       }
@@ -158,6 +165,8 @@ export default function App() {
         onCleanup={handleCleanup}
         enterToSubmit={enterToSubmit}
         onEnterToSubmitChange={setEnterToSubmit}
+        theme={theme}
+        onThemeChange={setTheme}
       />
 
       <main className={`flex-1 container mx-auto px-4 transition-all duration-500 ease-in-out ${

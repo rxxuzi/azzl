@@ -153,11 +153,13 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
   };
 
   return (
-    <div className={`group p-6 rounded-2xl shadow-lg transition-all duration-300 ${
-      message.role === 'user'
-        ? 'ml-4 md:ml-12 bg-gradient-to-r from-[#0A1A3D] to-[#0D0D0D] border border-[#1E3A8A]/10'
-        : 'mr-4 md:mr-12 bg-[#0D0D0D] border border-white/[0.03]'
-    }`}>
+    <div
+      className={`group p-4 rounded-2xl shadow-lg transition-all duration-300 ${
+        message.role === 'user'
+          ? 'ml-2 md:ml-8 bg-gradient-to-r from-[#0A1A3D] to-[#0D0D0D] border border-[#1E3A8A]/10'
+          : 'mr-2 md:mr-8 bg-[#0D0D0D] border border-white/[0.03] hover:border-white/[0.06]'
+      }`}
+    >
       <div className="prose prose-invert max-w-none markdown-content">
         {processContent(message.content).map((segment, index) => (
           <React.Fragment key={index}>
@@ -169,14 +171,14 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
                   code({ node, inline, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
                     const code = String(children).replace(/\n$/, '');
-
+                    
                     return !inline && match ? (
-                      <div className="relative my-6 first:mt-0 last:mb-0 overflow-hidden rounded-xl border border-white/[0.03]">
-                        <div className="absolute top-0 right-0 left-0 h-12 bg-black/40 border-b border-white/[0.03] flex items-center justify-between px-4">
+                      <div className="relative my-4 first:mt-0 last:mb-0 overflow-hidden rounded-xl border border-white/[0.03]">
+                        <div className="absolute top-0 right-0 left-0 h-10 bg-black/40 border-b border-white/[0.03] flex items-center justify-between px-3">
                           <span className="text-sm text-white/40 font-mono">{match[1]}</span>
                           <button
                             onClick={() => handleCopyCode(code)}
-                            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                            className="p-1.5 hover:bg-white/5 rounded-lg transition-colors"
                           >
                             {copiedBlock === code ? (
                               <Check className="w-4 h-4 text-green-400" />
@@ -189,10 +191,11 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
                           style={vscDarkPlus}
                           language={match[1]}
                           PreTag="div"
-                          className="!mt-0 !bg-black/20 !p-4 !pt-16"
+                          className="!mt-0 !bg-black/20 !p-3 !pt-12"
                           customStyle={{
                             margin: 0,
                             background: '#0A0A0A',
+                            fontSize: '0.9em',
                           }}
                           {...props}
                         >
@@ -211,7 +214,7 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
               </ReactMarkdown>
             ) : (
               segment.display ? (
-                <div className="my-4 text-center">
+                <div className="my-3 text-center">
                   <span
                     dangerouslySetInnerHTML={{
                       __html: katex.renderToString(segment.content, {
@@ -242,7 +245,7 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
           <button
             onClick={() => handleFeedback('good')}
             disabled={isSubmitting}
-            className={`p-2 hover:bg-white/5 rounded-lg transition-colors ${
+            className={`p-1.5 hover:bg-white/5 rounded-lg transition-colors ${
               feedback === 'good' ? 'text-[#00FF94] bg-white/5' : 'text-white/40 hover:text-[#00FF94]'
             } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
             title="Good response"
@@ -252,7 +255,7 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
           <button
             onClick={() => handleFeedback('bad')}
             disabled={isSubmitting}
-            className={`p-2 hover:bg-white/5 rounded-lg transition-colors ${
+            className={`p-1.5 hover:bg-white/5 rounded-lg transition-colors ${
               feedback === 'bad' ? 'text-[#FF3DFF] bg-white/5' : 'text-white/40 hover:text-[#FF3DFF]'
             } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
             title="Bad response"
@@ -261,7 +264,7 @@ export function Message({ message, onRegenerate, question, model, mode }: Messag
           </button>
           <button
             onClick={handleCopyRaw}
-            className={`p-2 hover:bg-white/5 rounded-lg transition-colors ${
+            className={`p-1.5 hover:bg-white/5 rounded-lg transition-colors ${
               copied ? 'text-[#00D1FF] bg-white/5' : 'text-white/40 hover:text-[#00D1FF]'
             }`}
             title={copied ? 'Copied!' : 'Copy raw markdown'}

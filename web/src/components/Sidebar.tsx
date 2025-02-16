@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Shield, HelpCircle, FileText, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { X, Shield, HelpCircle, FileText, Trash2, ToggleLeft, ToggleRight, Sun, Moon } from 'lucide-react';
 import { APP_NAME, VERSION } from '../App';
 
 interface SidebarProps {
@@ -8,6 +8,8 @@ interface SidebarProps {
   onCleanup: () => void;
   enterToSubmit: boolean;
   onEnterToSubmitChange: (value: boolean) => void;
+  theme: 'light' | 'dark';
+  onThemeChange: (theme: 'light' | 'dark') => void;
 }
 
 const menuItems = [
@@ -16,7 +18,15 @@ const menuItems = [
   { icon: FileText, label: 'License', path: '/license' },
 ];
 
-export function Sidebar({ isOpen, onClose, onCleanup, enterToSubmit, onEnterToSubmitChange }: SidebarProps) {
+export function Sidebar({
+  isOpen,
+  onClose,
+  onCleanup,
+  enterToSubmit,
+  onEnterToSubmitChange,
+  theme,
+  onThemeChange
+}: SidebarProps) {
   return (
     <>
       <div
@@ -44,24 +54,47 @@ export function Sidebar({ isOpen, onClose, onCleanup, enterToSubmit, onEnterToSu
         </div>
 
         <div className="space-y-6">
-          <div className="px-4 py-3 bg-white/5 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-white">Enter to Submit</h3>
-                <p className="text-xs text-white/50">
-                  {enterToSubmit ? 'Press Shift + Enter for new line' : 'Press Enter for new line'}
-                </p>
+          <div className="space-y-4">
+            <div className="px-4 py-3 bg-white/5 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-white">Enter to Submit</h3>
+                  <p className="text-xs text-white/50">
+                    {enterToSubmit ? 'Press Shift + Enter for new line' : 'Press Enter for new line'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onEnterToSubmitChange(!enterToSubmit)}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  {enterToSubmit ? (
+                    <ToggleRight className="w-6 h-6 text-[#00D1FF]" />
+                  ) : (
+                    <ToggleLeft className="w-6 h-6" />
+                  )}
+                </button>
               </div>
-              <button
-                onClick={() => onEnterToSubmitChange(!enterToSubmit)}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                {enterToSubmit ? (
-                  <ToggleRight className="w-6 h-6 text-[#00D1FF]" />
-                ) : (
-                  <ToggleLeft className="w-6 h-6" />
-                )}
-              </button>
+            </div>
+
+            <div className="px-4 py-3 bg-white/5 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-white">Theme</h3>
+                  <p className="text-xs text-white/50">
+                    {theme === 'dark' ? 'Dark mode enabled' : 'Light mode enabled'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onThemeChange(theme === 'dark' ? 'light' : 'dark')}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  {theme === 'dark' ? (
+                    <Moon className="w-6 h-6 text-[#00D1FF]" />
+                  ) : (
+                    <Sun className="w-6 h-6 text-[#FF8A00]" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
