@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# コマンドライン引数をそのままPythonスクリプトに渡す
+python3 w2db.py "$1"
+
+
+

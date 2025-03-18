@@ -1,0 +1,6 @@
+# ==========================
+# AZZL RAG
+# ========================== 
+requests
+pdfplumber
+markdownify
